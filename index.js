@@ -127,13 +127,34 @@ function _getRequestFunction (self, url) {
       debug('Request sent - Server responded with:', statusCode, body)
 
       if ((error || self.httpSuccessCodes.indexOf(statusCode) === -1)) {
-        self.emitter.emit(shortname + '.failure', shortname, statusCode, body)
+        self.emitter.emit(shortname + '.failure', {
+          name: shortname,
+          type: 'failure',
+          request: {
+            jsonData,
+            headersData
+          },
+          response: {
+            statusCode,
+            body
+          }
+        })
         return debug('HTTP failed: ' + error)
       }
 
-      self.emitter.emit(shortname + '.success', shortname, statusCode, body)
-    }
-      )
+      self.emitter.emit(shortname + '.success', {
+        name: shortname,
+        type: 'success',
+        request: {
+          jsonData,
+          headersData
+        },
+        response: {
+          statusCode,
+          body
+        }
+      })
+    })
   }
 
   return func
